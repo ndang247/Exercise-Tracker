@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 // import the date picker
 // the date picker will pop up a calendar for the user to pick date
 import DatePicker from 'react-datepicker';
@@ -29,10 +30,18 @@ export default class CreateExercise extends Component {
     // this lifecycle method will be call before render
     // this method will add users into the dropdown menu before it is render
     componentDidMount() {
-        this.setState({
-            users: ['test user'],
-            username: 'test user'
-        });
+        // get all the users as an array from database
+        // then if the response from database is > 0
+        // map the array of users to return every user then pass it to the state users
+        axios.get('http://localhost:8080/users/')
+        .then(response => {
+            if (response.data.length > 0) {
+                this.setState({
+                    users: response.data.map(user => user.username),
+                    username: response.data[0].username // show the first username in the dropdown menu
+                })
+            }
+        })
     }
 
     onChangeUsername(e) {
@@ -60,7 +69,6 @@ export default class CreateExercise extends Component {
     }
 
     // this function is use when user submit a form
-
     onSubmit(e) {
         // this will prevent the default HTML form submit behaviour from taking place
         e.preventDefault();
@@ -74,8 +82,10 @@ export default class CreateExercise extends Component {
 
         console.log(exercise);
 
-        // after user submit take the user back to homepage
-        window.location = '/';
+        // send excersie object to our back-end to add to database
+        // make sure the back-end is running
+        axios.post('http://localhost:8080/exercises/add/', exercise)
+        .then(res => console.log(res.data));
     }
 
 
