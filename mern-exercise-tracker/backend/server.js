@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 const uri = process.env.ATLAS_URI;
 // connection to the cloud database
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
-const connection = mongoose.connection;
+const connection = mongoose.connection; 
 // once connected execute the callback
 connection.once('open', () => {
     console.log('MongoDB database connection established successfully');
